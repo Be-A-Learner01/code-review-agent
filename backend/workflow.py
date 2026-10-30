@@ -1,7 +1,7 @@
 from typing import TypedDict, Dict
 from langgraph.types import Send
 import asyncio
-from langgraph.graph import StateGraph, END
+from langgraph.graph import StateGraph, END, START
 from agents import syntax_agent, security_agent, style_agent
 
 
@@ -84,16 +84,15 @@ workflow = StateGraph(ReviewState)
 
 
 #Set node
-workflow.add_node("dispatch", dispatch_review)
 workflow.add_node("run_syntax", run_syntax)
 workflow.add_node("run_security", run_security)
 workflow.add_node("run_style", run_style)
 workflow.add_node("summarize", summarize)
 
-#Set entry node
-workflow.set_entry_point("dispatch")
+#Set config edges
+workflow.add_conditional_edges(START, dispatch_review, ["run_syntax", "run_security", "run_style"])
 
-#Set edges
+#Set normal edges
 workflow.add_edge("run_syntax", "summarize")
 workflow.add_edge("run_security", "summarize")
 workflow.add_edge("run_style", "summarize")
