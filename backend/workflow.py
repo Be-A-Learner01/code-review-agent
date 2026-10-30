@@ -46,18 +46,18 @@ def dispatch_review(state: ReviewState):
 
 async def run_syntax(state: ReviewState) -> Dict[str, str]:
     """ Syntax review node"""
-    result = safe_invoke(syntax_agent, state["code"], "Syntax")
+    result = await safe_invoke(syntax_agent, state["code"], "Syntax")
     return {"syntax_result": result}
 
 async def run_security(state: ReviewState) -> Dict[str, str]:
     """ Security review node"""
-    result = safe_invoke(security_agent, state["code"], "Security")
+    result = await safe_invoke(security_agent, state["code"], "Security")
     return {"security_result": result}
 
 
 async def run_style(state: ReviewState) -> Dict[str, str]:
     """ Style review node"""
-    result = safe_invoke(style_agent, state["code"], "Style")
+    result = await safe_invoke(style_agent, state["code"], "Style")
     return {"style_result": result}
 
 
@@ -98,4 +98,5 @@ workflow.add_edge("run_security", "summarize")
 workflow.add_edge("run_style", "summarize")
 workflow.add_edge("summarize", END)
 
+#Compile
 app_graph = workflow.compile()
